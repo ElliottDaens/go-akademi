@@ -3,67 +3,89 @@
 @section('title', 'Contact')
 
 @section('content')
-    <section class="relative h-[45vh] min-h-[320px] overflow-hidden">
-        <img src="{{ $heroImage }}" alt="Contact" class="absolute inset-0 h-full w-full object-cover" loading="eager" width="1920" height="720">
-        <div class="absolute inset-0 bg-black/70"></div>
-        <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
-        <div class="relative flex h-full items-center justify-center">
-            <h1 class="font-display text-4xl tracking-[0.2em] text-white md:text-6xl">CONTACT</h1>
+    {{-- Hero --}}
+    <section class="hero-secondary relative overflow-hidden flex items-center justify-center">
+        <img src="{{ $heroImage }}" alt="Contact" class="absolute inset-0 h-full w-full object-cover opacity-20" loading="eager">
+        <div class="absolute inset-0 bg-gradient-to-b from-[#050505] via-[#050505]/50 to-[#050505]"></div>
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-red-600/8 rounded-full blur-[100px] pointer-events-none"></div>
+        <div class="relative text-center px-6 pt-20">
+            <h1 class="text-4xl md:text-6xl font-normal tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white to-neutral-400">CONTACT</h1>
         </div>
     </section>
 
-    <div class="mx-auto max-w-5xl px-4 py-20 sm:px-6 lg:px-8">
+    <div class="max-w-6xl mx-auto px-5 md:px-6 py-14 md:py-20">
         @if(session('success'))
-        <div class="mb-8 border-2 border-green-600 bg-green-50 p-4 font-semibold text-green-800">
+        <div class="mb-8 p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-400 text-sm font-medium flex items-center gap-3">
+            <iconify-icon icon="solar:check-circle-linear" style="font-size: 1.25rem; flex-shrink:0;"></iconify-icon>
             {{ session('success') }}
         </div>
         @endif
 
-        <div class="grid gap-16 lg:grid-cols-2">
+        <div class="grid gap-10 lg:gap-16 lg:grid-cols-2">
+            {{-- Info --}}
             <div class="animate-on-scroll">
-                <h2 class="section-title">Des questions ?</h2>
-                <div class="mt-8 card-go">
-                    <div class="space-y-6">
-                        <p class="flex items-center gap-4 text-lg">
-                            <span class="flex h-12 w-12 shrink-0 items-center justify-center bg-red-700 text-white">📍</span>
-                            <span class="font-semibold">62100 Calais</span>
-                        </p>
-                        <a href="tel:0627542416" class="flex items-center gap-4 text-lg transition hover:text-red-700">
-                            <span class="flex h-12 w-12 shrink-0 items-center justify-center border-2 border-black text-xl">📞</span>
-                            <span class="font-semibold">06 27 54 24 16</span>
-                        </a>
-                        <a href="mailto:Acjb62100@gmail.com" class="flex items-center gap-4 text-lg transition hover:text-red-700">
-                            <span class="flex h-12 w-12 shrink-0 items-center justify-center border-2 border-black text-xl">✉</span>
-                            <span class="font-semibold">Acjb62100@gmail.com</span>
-                        </a>
+                <span class="text-red-500 text-xs font-medium tracking-widest uppercase mb-4 block">Coordonnées</span>
+                <h2 class="text-3xl md:text-4xl font-normal tracking-tight text-white mb-8">Des questions ?</h2>
+
+                <div class="space-y-4">
+                    <div class="p-5 bg-[#0a0a0a] border border-white/5 rounded-xl flex items-center gap-4">
+                        <div class="text-red-500 bg-red-500/10 border border-red-500/20 w-12 h-12 rounded-xl flex items-center justify-center shrink-0">
+                            <iconify-icon icon="solar:map-point-linear" style="font-size: 1.25rem;"></iconify-icon>
+                        </div>
+                        <span class="text-neutral-300 font-medium">{{ $adresse }}</span>
                     </div>
+                    <a href="tel:{{ preg_replace('/\s/', '', $telephone) }}" class="p-5 bg-[#0a0a0a] border border-white/5 rounded-xl flex items-center gap-4 hover:bg-neutral-900/50 transition group">
+                        <div class="text-red-500 bg-red-500/10 border border-red-500/20 w-12 h-12 rounded-xl flex items-center justify-center shrink-0">
+                            <iconify-icon icon="solar:phone-calling-linear" style="font-size: 1.25rem;"></iconify-icon>
+                        </div>
+                        <span class="text-neutral-300 font-medium group-hover:text-white transition">{{ $telephone }}</span>
+                    </a>
+                    <a href="mailto:{{ $email }}" class="p-5 bg-[#0a0a0a] border border-white/5 rounded-xl flex items-center gap-4 hover:bg-neutral-900/50 transition group">
+                        <div class="text-red-500 bg-red-500/10 border border-red-500/20 w-12 h-12 rounded-xl flex items-center justify-center shrink-0">
+                            <iconify-icon icon="solar:letter-linear" style="font-size: 1.25rem;"></iconify-icon>
+                        </div>
+                        <span class="text-neutral-300 font-medium group-hover:text-white transition">{{ $email }}</span>
+                    </a>
                 </div>
             </div>
 
+            {{-- Form --}}
             <div class="animate-on-scroll animate-delay-2">
-                <h2 class="section-title">Écrivez-nous</h2>
-                <form action="{{ route('contact.store') }}" method="POST" class="mt-8 space-y-6">
+                <span class="text-red-500 text-xs font-medium tracking-widest uppercase mb-4 block">Formulaire</span>
+                <h2 class="text-3xl md:text-4xl font-normal tracking-tight text-white mb-8">Écrivez-nous</h2>
+
+                <form action="{{ route('contact.store') }}" method="POST" class="space-y-5">
                     @csrf
                     <div>
-                        <label for="nom" class="block font-semibold text-black">Votre nom *</label>
-                        <input type="text" id="nom" name="nom" value="{{ old('nom') }}" required class="mt-2 w-full rounded-lg border-2 border-black px-4 py-3 transition focus:border-red-700 focus:outline-none focus:ring-2 focus:ring-red-700/30">
-                        @error('nom')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
+                        <label for="nom" class="block text-sm font-medium text-neutral-300 mb-2">Votre nom *</label>
+                        <input type="text" id="nom" name="nom" value="{{ old('nom') }}" required
+                            class="w-full rounded-lg border border-white/10 bg-[#0a0a0a] px-4 py-3 text-neutral-200 transition focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500/20 placeholder-neutral-600"
+                            placeholder="Jean Dupont">
+                        @error('nom')<p class="mt-1 text-sm text-red-400">{{ $message }}</p>@enderror
                     </div>
                     <div>
-                        <label for="email" class="block font-semibold text-black">Votre email *</label>
-                        <input type="email" id="email" name="email" value="{{ old('email') }}" required class="mt-2 w-full rounded-lg border-2 border-black px-4 py-3 transition focus:border-red-700 focus:outline-none focus:ring-2 focus:ring-red-700/30">
-                        @error('email')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
+                        <label for="email" class="block text-sm font-medium text-neutral-300 mb-2">Votre email *</label>
+                        <input type="email" id="email" name="email" value="{{ old('email') }}" required
+                            class="w-full rounded-lg border border-white/10 bg-[#0a0a0a] px-4 py-3 text-neutral-200 transition focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500/20 placeholder-neutral-600"
+                            placeholder="jean@exemple.fr">
+                        @error('email')<p class="mt-1 text-sm text-red-400">{{ $message }}</p>@enderror
                     </div>
                     <div>
-                        <label for="sujet" class="block font-semibold text-black">Sujet</label>
-                        <input type="text" id="sujet" name="sujet" value="{{ old('sujet') }}" class="mt-2 w-full rounded-lg border-2 border-black px-4 py-3 transition focus:border-red-700 focus:outline-none focus:ring-2 focus:ring-red-700/30">
+                        <label for="sujet" class="block text-sm font-medium text-neutral-300 mb-2">Sujet</label>
+                        <input type="text" id="sujet" name="sujet" value="{{ old('sujet') }}"
+                            class="w-full rounded-lg border border-white/10 bg-[#0a0a0a] px-4 py-3 text-neutral-200 transition focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500/20 placeholder-neutral-600"
+                            placeholder="Renseignements inscription">
                     </div>
                     <div>
-                        <label for="message" class="block font-semibold text-black">Votre demande</label>
-                        <textarea id="message" name="message" rows="4" required class="mt-2 w-full rounded-lg border-2 border-black px-4 py-3 transition focus:border-red-700 focus:outline-none focus:ring-2 focus:ring-red-700/30">{{ old('message') }}</textarea>
-                        @error('message')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
+                        <label for="message" class="block text-sm font-medium text-neutral-300 mb-2">Votre demande *</label>
+                        <textarea id="message" name="message" rows="5" required
+                            class="w-full rounded-lg border border-white/10 bg-[#0a0a0a] px-4 py-3 text-neutral-200 transition focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500/20 placeholder-neutral-600 resize-y"
+                            placeholder="Votre message...">{{ old('message') }}</textarea>
+                        @error('message')<p class="mt-1 text-sm text-red-400">{{ $message }}</p>@enderror
                     </div>
-                    <button type="submit" class="btn-go">Envoyer</button>
+                    <button type="submit" class="w-full sm:w-auto px-8 py-3 bg-white text-black rounded-full font-medium tracking-tight text-sm hover:bg-neutral-200 transition-colors">
+                        Envoyer le message
+                    </button>
                 </form>
             </div>
         </div>

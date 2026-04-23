@@ -116,6 +116,12 @@ class CrudController extends Controller
     private function handleFileUploads(Request $request, array $data, array $fileColumns, ?object $existingItem = null): array
     {
         foreach ($fileColumns as $col) {
+            $croppedData = $request->input($col . '_cropped');
+            if ($croppedData && str_starts_with($croppedData, 'data:image/')) {
+                $data[$col] = $this->saveCroppedImage($croppedData, $col);
+                continue;
+            }
+
             if (!$request->hasFile($col)) {
                 if ($existingItem && isset($existingItem->$col)) {
                     $data[$col] = $existingItem->$col;
@@ -134,12 +140,32 @@ class CrudController extends Controller
         return $data;
     }
 
+    private function saveCroppedImage(string $base64Data, string $key): string
+    {
+        $parts = explode(',', $base64Data, 2);
+        $mime = str_replace(['data:', ';base64'], '', $parts[0]);
+        $extension = match ($mime) {
+            'image/png' => 'png',
+            'image/webp' => 'webp',
+            'image/gif' => 'gif',
+            default => 'jpg',
+        };
+
+        $filename = $key . '-' . now()->timestamp . '-' . Str::random(4) . '.' . $extension;
+        file_put_contents(public_path('images/' . $filename), base64_decode($parts[1]));
+
+        return $filename;
+    }
+
     private function castData(string $modelClass, array $data): array
     {
         $model = new $modelClass;
         $casts = $model->getCasts();
 
         foreach ($data as $key => $value) {
+            if ($value === null && !in_array($key, ['date_publication', 'contenu', 'image'])) {
+                $data[$key] = '';
+            }
             if (isset($casts[$key])) {
                 if ($casts[$key] === 'boolean') {
                     $data[$key] = filter_var($value, FILTER_VALIDATE_BOOLEAN);
